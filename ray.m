@@ -15,15 +15,21 @@ classdef ray
             p = obj.origin + t*obj.direction;
         end
         
-        function c = coloring(obj, hitable)
-            [flag, rec] = hit_anything(obj, hitable, 0.0, 10^5);
+        function [r, g, b] = coloring(obj, hitable)
+            [flag, rec] = hit_anything(obj, hitable, 0.0001, 10^5);
             if(flag)
-                N = rec.normal;
-                c = 0.5*(N+1);
+                target = rec.p + rec.normal + random_in_unit_sphere;
+                [r, g, b] = coloring(ray(rec.p, target-rec.p), hitable);
+                r = 0.5*r;
+                g = 0.5*g;
+                b = 0.5*b;
             else
                 u = obj.direction./norm(obj.direction);
                 k = 0.5*(u(2) + 1.0);
                 c = (1.0 - k)*[1.0;1.0;1.0] + k*[0.5;0.7;1.0];
+                r = c(1);
+                g = c(2);
+                b = c(3);
             end
         end
         
@@ -40,6 +46,7 @@ classdef ray
                 end
             end
         end
+        
     end
 end
 

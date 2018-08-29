@@ -1,9 +1,15 @@
-function Image = Ray2Image(Ray, hitable)
+function Image = Ray2Image(u, v, cam, hitable)
     % Coloring
-    RGB = cellfun(@(R) R.coloring(hitable), Ray, 'UniformOutput', false);
+    function [R, G, B] = get_color(x, y)
+        Ray = cam.get_ray(x, y);
+        [R, G, B] = Ray.coloring(hitable);
+    end
+    [R, G, B] = arrayfun(@get_color, u, v);
     % Transform to image data
-    [ly, lx] = size(RGB);
-    RGBMat = cell2mat(RGB);
-    RGBMat = reshape(RGBMat(:), [3 ly*lx])';
-    Image = reshape(RGBMat, [ly lx 3]);
+    [ly, lx] = size(u);
+    Image = zeros(ly, lx, 3);
+    Image(:, :, 1) = R;
+    Image(:, :, 2) = G;
+    Image(:, :, 3) = B;
 end
+
