@@ -15,14 +15,21 @@ classdef ray
             p = obj.origin + t*obj.direction;
         end
         
-        function [r, g, b] = coloring(obj, hitable)
+        function [r, g, b] = coloring(obj, hitable, depth)
             [flag, rec] = hit_anything(obj, hitable, 0.0001, 10^5);
             if(flag)
-                target = rec.p + rec.normal + random_in_unit_sphere;
-                [r, g, b] = coloring(ray(rec.p, target-rec.p), hitable);
-                r = 0.5*r;
-                g = 0.5*g;
-                b = 0.5*b;
+                [flag_rec, attenuation, sc] = rec.material.scatter(obj, rec);
+                if(depth < 50 & flag_rec)
+                    [r, g, b] = coloring(sc, hitable, depth+1);
+                    r = attenuation(1)*r;
+                    g = attenuation(2)*g;
+                    b = attenuation(3)*b;
+                else
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                end
+                
             else
                 u = obj.direction./norm(obj.direction);
                 k = 0.5*(u(2) + 1.0);
