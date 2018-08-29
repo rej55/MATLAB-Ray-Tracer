@@ -13,12 +13,12 @@ hitable(5) = sphere([-1;0;-1], -0.45, dielectric(1.5));
 px = [100 200];
 
 %% Generate camera
-cam = camera;
+cam = camera([-2;2;1], [0;0;-1], [0;1;0], 30, px(2)/px(1));
 
 %%
 ix = 0:px(2)-1;
 iy = 0:px(1)-1;
-ns = 100;
+ns = 30;
 
 Image = zeros(px(1), px(2), 3);
 Image_tmp = cell(ns, 1);
