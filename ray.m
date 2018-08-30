@@ -6,24 +6,27 @@ classdef ray
     end
     
     methods
+        %% Constructor
         function obj = ray(A, B)
             obj.origin = A;
             obj.direction = B;
         end
         
+        %% Calculate point of the ray
         function p = point_at(obj, t)
             p = obj.origin + t*obj.direction;
         end
         
+        %% Calculate color
         function [r, g, b] = coloring(obj, hitable, depth)
-            [flag, rec] = hit_anything(obj, hitable, 0.0001, 10^5);
+            [flag, rec] = hit_anything(obj, hitable, 0.000001, 10^8);
             if(flag)
                 [flag_rec, attenuation, sc] = rec.material.scatter(obj, rec);
                 if(depth < 50 & flag_rec)
-                    [r, g, b] = coloring(sc, hitable, depth+1);
-                    r = attenuation(1)*r;
-                    g = attenuation(2)*g;
-                    b = attenuation(3)*b;
+                    [R, G, B] = coloring(sc, hitable, depth+1);
+                    r = attenuation(1)*R;
+                    g = attenuation(2)*G;
+                    b = attenuation(3)*B;
                 else
                     r = 0;
                     g = 0;
@@ -40,6 +43,7 @@ classdef ray
             end
         end
         
+        %% Calculate collision of ray and hitable objects
         function [flag, rec] = hit_anything(obj, hitable, tmin, tmax)
             rec = [];
             flag = false;

@@ -4,12 +4,14 @@ classdef dielectric
     end
     
     methods
+        %% Constructor
         function obj = dielectric(ri)
             obj.ref_idx = ri;
         end
         
+        %% Calculate scatter of the ray
         function [flag, attenuation, scattered] = scatter(obj, ray_in, rec)
-            reflected = reflect(ray_in.direction./norm(ray_in.direction), rec.normal);
+            reflected = reflect(ray_in.direction, rec.normal);
             attenuation = ones(3, 1);
             if(ray_in.direction'*rec.normal > 0)
                 outward_normal = -rec.normal;

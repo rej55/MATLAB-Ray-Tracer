@@ -7,31 +7,31 @@ classdef sphere
     end
     
     methods
-        % Constructor
+        %% Constructor
         function obj = sphere(c, r, material)
             obj.center = c;
             obj.radius = r;
             obj.material = material;
         end
         
-        % Hit ditection
+        %% Hit ditection
         function [flag, rec] = hit(obj, ray, tmin, tmax)
             rec = [];
             oc = ray.origin - obj.center;
             a = ray.direction'*ray.direction;
-            b = 2.0 * oc' * ray.direction;
+            b = oc' * ray.direction;
             c = oc' * oc - obj.radius * obj.radius;
-            discriminant = b*b - 4*a*c;
+            discriminant = b*b - a*c;
             flag = false;
             if(discriminant > 0)
-                t = (-b - sqrt(discriminant))/(2.0*a);
+                t = (-b - sqrt(discriminant))/(a);
                 if(t < tmax & t > tmin)
-                    rec = hitable(t, ray.point_at(t), (ray.point_at(t) - obj.center)./obj.radius, obj.material);
+                    rec = hitable(t, ray.point_at(t), (ray.point_at(t) - obj.center)./norm(ray.point_at(t) - obj.center), obj.material);
                     flag = true;
                 else
-                    t = (-b + sqrt(discriminant))/(2.0*a);
+                    t = (-b + sqrt(discriminant))/(a);
                     if(t < tmax & t > tmin)
-                        rec = hitable(t, ray.point_at(t), (ray.point_at(t) - obj.center)./obj.radius, obj.material);
+                        rec = hitable(t, ray.point_at(t), (ray.point_at(t) - obj.center)./norm(ray.point_at(t) - obj.center), obj.material);
                         flag = true;
                     end
                 end
